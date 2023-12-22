@@ -13,10 +13,17 @@ const PostSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    tags: {
+    comments: {
       type: Array,
+      ref: "Comment",
       default: [],
     },
+    tags: {
+      type: Array,
+      ref: "Comment",
+      default: [],
+    },
+
     viewsCount: {
       type: Number,
       default: 0,
@@ -31,7 +38,7 @@ const PostSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("Post", PostSchema);

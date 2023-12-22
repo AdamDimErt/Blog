@@ -23,15 +23,22 @@ import {
 import {
   PostController,
   UserController,
+    CommentController,
 } from "./controllers/index.js";
+import {createComment} from "./controllers/CommentController.js";
+
+
 
 mongoose
   .connect(
-    "mongodb+srv://AdamDim:rfyfn022402@cluster0.p0aseks.mongodb.net/blog?retryWrites=true&w=majority"
+    "mongodb+srv://AdamDim:09012008@cluster0.p0aseks.mongodb.net/"
   )
+
   .then(() => {
     console.log("connects db");
   })
+
+
   .catch((e) => {
     console.log(e);
   });
@@ -72,6 +79,7 @@ app.post(
   validationErrors,
   UserController.register
 );
+app.get("/post/:id:",PostController.getPost)
 // get me info
 app.get("/auth/me", checkAuth, UserController.getMe);
 // get posts
@@ -98,6 +106,8 @@ app.patch(
 );
 // тэги
 app.get("/tags", PostController.getTags);
+
+app.post("/comments",CommentController.createComment)
 // картиник
 app.post(
   "/upload",
@@ -110,6 +120,7 @@ app.post(
   }
 );
 
+
 app.listen(1234, (err) => {
-  err ? console.log(err) : console.log("ok");
+  err ? console.log(err) : console.log(`server is running on port ${1234}`);
 });

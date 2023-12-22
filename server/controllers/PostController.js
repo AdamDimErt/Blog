@@ -8,9 +8,9 @@ export const getTags = async (req, res) => {
     const posts = await PostModel.find().limit(5).exec();
 
     const tags = posts
-      .map((obj) => obj.tags)
-      .flat()
-      .slice(0, 5);
+        .map((obj) => obj.tags)
+        .flat()
+        .slice(0, 5);
 
     res.json(tags);
   } catch (error) {
@@ -21,14 +21,35 @@ export const getTags = async (req, res) => {
   }
 };
 
+
 export const getAll = async (req, res) => {
   try {
     // populate для связвания объектов
-    const posts = await PostModel.find()
-      .populate("user")
-      .exec();
+    const posts = await PostModel.find().populate("comments").populate("user").exec();
 
     res.json(posts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "не удалось получить статьи,",
+    });
+  }
+};
+
+export const getPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await PostModel.findOne({
+      _id: postId,
+      user: req.userId,
+    }).populate("user");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "статья не найдена",
+      });
+    }
+    res.json(post);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -62,8 +83,8 @@ export const getOne = async (req, res) => {
           });
         }
         res.json(doc);
-      }
-    ).populate('user');
+      },
+    ).populate("user");
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -78,7 +99,7 @@ export const create = async (req, res) => {
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
-      tags: req.body.tags,
+
       user: req.userId,
     });
 
@@ -114,7 +135,7 @@ export const remove = async (req, res) => {
         res.json({
           succes: true,
         });
-      }
+      },
     );
   } catch (error) {}
 };
@@ -130,9 +151,9 @@ export const update = async (req, res) => {
         title: req.body.title,
         text: req.body.text,
         imageUrl: req.body.imageUrl,
-        tags: req.body.tags,
+
         user: req.userId,
-      }
+      },
     );
     res.json({
       succes: true,
